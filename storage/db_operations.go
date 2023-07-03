@@ -55,7 +55,7 @@ func GetAllTodoFromDB() ([]types.Todo, error) {
 	return todoList, nil
 }
 
-func UpdateInDB(taskID string) error {
+func UpdateDoneInDB(taskID string) error {
 	db := GetDB()
 	logger := utils.GetLogger()
 
@@ -67,6 +67,27 @@ func UpdateInDB(taskID string) error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(taskID)
+	if err != nil {
+		logger.Error("🛑 can't execute statement ", zap.Error(err))
+		return err
+	}
+
+	logger.Info("✅ successfully updated row in table")
+	return nil
+}
+
+func UpdateTitleInDB(taskID string, newTitle string) error {
+	db := GetDB()
+	logger := utils.GetLogger()
+
+	stmt, err := db.Prepare("UPDATE todos SET title = $1 WHERE id = $2")
+	if err != nil {
+		logger.Error("🛑 can't prepare statement ", zap.Error(err))
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(newTitle, taskID)
 	if err != nil {
 		logger.Error("🛑 can't execute statement ", zap.Error(err))
 		return err
