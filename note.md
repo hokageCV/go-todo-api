@@ -1,6 +1,0 @@
-- api: for all the controllers
-- types: for all the types used all around the api
-- utils: dattebayo
-- storage: for all the storage related stuff.
-  - all functions that storage is gonna implement
-  - have an interface

@@ -14,7 +14,7 @@ var err error
 
 func InitializeDB() error {
 	logger := utils.GetLogger()
-	connStr := "user=CBlizzard password=AGxnpgCy65PK dbname=neondb host=ep-sparkling-snow-514514-pooler.us-east-2.aws.neon.tech sslmode=verify-full"
+	connStr := utils.GetEnvVariable("CONENCTION_STRING")
 
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
