@@ -2,21 +2,31 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/hokageCV/go-todo-api/api"
 	"github.com/hokageCV/go-todo-api/storage"
+	"github.com/hokageCV/go-todo-api/utils"
 )
 
 func main() {
-	storage.InitializeDB()
+	utils.InitializeLogger()
+
+	err := storage.InitializeDB()
+	if err != nil {
+		panic(err)
+	}
+
 	db := storage.GetDB()
 	defer db.Close()
 
 	app := fiber.New()
 
-	// routing
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	api.SetupRoutes(app)
 
 	app.Listen(":3000")
 }

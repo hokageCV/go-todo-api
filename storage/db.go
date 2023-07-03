@@ -12,7 +12,7 @@ import (
 var db *sql.DB
 var err error
 
-func InitializeDB() {
+func InitializeDB() error {
 	logger := utils.GetLogger()
 	connStr := "user=CBlizzard password=AGxnpgCy65PK dbname=neondb host=ep-sparkling-snow-514514-pooler.us-east-2.aws.neon.tech sslmode=verify-full"
 
@@ -21,10 +21,17 @@ func InitializeDB() {
 		logger.Error("can't connect to DB😱 ", zap.Error(err))
 	}
 
+	err = db.Ping()
+	if err != nil {
+		logger.Error("can't ping DB😱 ", zap.Error(err))
+		return err
+	}
+
 	err = createTableIfNotExists()
 	if err != nil {
 		logger.Error("can't create table😱 ", zap.Error(err))
 	}
+	return nil
 
 }
 
