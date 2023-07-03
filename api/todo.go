@@ -23,10 +23,21 @@ func GetAllTodo(c *fiber.Ctx) error {
 
 func CreateTodo(c *fiber.Ctx) error {
 	logger := utils.GetLogger()
-	taskTitle := c.Body()
 
-	err := storage.InsertIntoDB(string(taskTitle))
+	var request struct {
+		Title string `json:"title"`
+	}
+
+	err := c.BodyParser(&request)
 	if err != nil {
+		logger.Error("🛑 can't parse request body ", zap.Error(err))
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	errr := storage.InsertIntoDB(request.Title)
+	if errr != nil {
 		logger.Error("🛑 can't insert into db ", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to create todo",
@@ -58,10 +69,21 @@ func MarkTodoDone(c *fiber.Ctx) error {
 func UpdateTodoTitle(c *fiber.Ctx) error {
 	logger := utils.GetLogger()
 	id := c.Params("id")
-	title := c.Body()
 
-	err := storage.UpdateTitleInDB(id, string(title))
+	var request struct {
+		Title string `json:"title"`
+	}
+
+	err := c.BodyParser(&request)
 	if err != nil {
+		logger.Error("🛑 can't parse request body ", zap.Error(err))
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	errr := storage.UpdateTitleInDB(id, request.Title)
+	if errr != nil {
 		logger.Error("🛑 can't update todo in db ", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to update todo",
