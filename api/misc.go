@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -29,7 +29,7 @@ func GetRandomPokemon(c *fiber.Ctx) error {
 	}
 	defer resp.Body.Close()
 
-	bytesData, err := ioutil.ReadAll(resp.Body)
+	bytesData, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
