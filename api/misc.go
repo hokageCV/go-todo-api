@@ -29,7 +29,7 @@ func GetRandomPokemon(c *fiber.Ctx) error {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	bytesData, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -38,13 +38,28 @@ func GetRandomPokemon(c *fiber.Ctx) error {
 	}
 
 	var pokemon types.Pokemon
-	err = json.Unmarshal(body, &pokemon)
+	err = json.Unmarshal(bytesData, &pokemon) // bytes to json
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// map data to response
+	typesArray := make([]string, len(pokemon.Types))
+	for i, t := range pokemon.Types {
+		typesArray[i] = t.Type.Name
+	}
+
+	abilitiesArray := make([]string, len(pokemon.Abilities))
+	for i, a := range pokemon.Abilities {
+		abilitiesArray[i] = a.Ability.Name
+	}
+
 	response := types.PokemonResponse{
-		Pokemon: pokemon,
+		Name:           pokemon.Name,
+		Order:          pokemon.Order,
+		Types:          typesArray,
+		Abilities:      abilitiesArray,
+		BaseExperience: pokemon.BaseExperience,
 	}
 
 	return c.JSON(response)
