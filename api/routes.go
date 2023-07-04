@@ -9,11 +9,17 @@ func SetupRoutes(app *fiber.App) {
 		return c.SendString("Hello, World!")
 	})
 
-	apiRouter := app.Group("/api")
+	// ================================
+	todoRouter := app.Group("/api")
 
-	apiRouter.Get("/todo", GetAllTodo)
-	apiRouter.Post("/todo", CreateTodo)
-	apiRouter.Patch("/todo/:id/done", MarkTodoDone)
-	apiRouter.Patch("/todo/:id", UpdateTodoTitle)
-	apiRouter.Delete("/todo/:id", DeleteTodo)
+	todoRouter.Get("/todo", GetAllTodo)
+	todoRouter.Post("/todo", CreateTodo)
+	todoRouter.Patch("/todo/:id/done", MarkTodoDone)
+	todoRouter.Patch("/todo/:id", UpdateTodoTitle)
+	todoRouter.Delete("/todo/:id", DeleteTodo)
+
+	// ================================
+	miscRouter := app.Group("/misc")
+
+	miscRouter.Get("/pokemon", GetRandomPokemon)
 }
