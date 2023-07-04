@@ -31,6 +31,10 @@ func InitializeDB() error {
 	if err != nil {
 		logger.Error("can't create table😱 ", zap.Error(err))
 	}
+
+	// // delete table
+	// _, err = db.Exec("DROP TABLE todos")
+
 	return nil
 
 }
@@ -43,7 +47,7 @@ func createTableIfNotExists() error {
 
 	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS todos (
-		id SERIAL PRIMARY KEY,
+		id VARCHAR(255) PRIMARY KEY,
 		title TEXT,
 		is_done BOOLEAN
 	)

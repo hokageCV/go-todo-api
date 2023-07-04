@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/hokageCV/go-todo-api/storage"
 	"github.com/hokageCV/go-todo-api/utils"
+	"github.com/lithammer/shortuuid/v4"
 	"go.uber.org/zap"
 )
 
@@ -23,6 +24,7 @@ func GetAllTodo(c *fiber.Ctx) error {
 
 func CreateTodo(c *fiber.Ctx) error {
 	logger := utils.GetLogger()
+	id := shortuuid.New()
 
 	var request struct {
 		Title string `json:"title"`
@@ -36,7 +38,7 @@ func CreateTodo(c *fiber.Ctx) error {
 		})
 	}
 
-	errr := storage.InsertIntoDB(request.Title)
+	errr := storage.InsertIntoDB(id, request.Title)
 	if errr != nil {
 		logger.Error("🛑 can't insert into db ", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

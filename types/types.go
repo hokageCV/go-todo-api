@@ -1,7 +1,7 @@
 package types
 
 type Todo struct {
-	ID     uint   `gorm:"primary key;autoIncrement" json:"id"`
+	ID     string `json:"id" db:"primary_key"`
 	Title  string `json:"title"`
 	IsDone bool   `json:"is_done"`
 }

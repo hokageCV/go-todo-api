@@ -6,18 +6,18 @@ import (
 	"go.uber.org/zap"
 )
 
-func InsertIntoDB(title string) error {
+func InsertIntoDB(id string, title string) error {
 	db := GetDB()
 	logger := utils.GetLogger()
 
-	stmt, err := db.Prepare("INSERT INTO todos (title, is_done) VALUES ($1, $2)")
+	stmt, err := db.Prepare("INSERT INTO todos (id, title, is_done) VALUES ($1, $2, $3)")
 	if err != nil {
 		logger.Error("🛑 can't prepare statement ", zap.Error(err))
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(title, false)
+	_, err = stmt.Exec(id, title, false)
 	if err != nil {
 		logger.Error("🛑 can't execute statement ", zap.Error(err))
 		return err
